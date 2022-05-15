@@ -289,16 +289,18 @@ describe('notepack', function () {
     expect(notepack.encode(obj)).to.deep.equal(notepack.encode('c'));
   });
 
-  it('toJSON on BigInt.prototype', function () {
-    BigInt.prototype.toJSON = function () {
-      return String(this);
-    };
-    try {
-      expect(notepack.encode(BigInt(1234))).to.deep.equal(notepack.encode('1234'));
-    } finally {
-      delete BigInt.prototype.toJSON;
-    }
-  });
+  if (typeof BigInt === 'function') {
+    it('toJSON on BigInt.prototype', function () {
+      BigInt.prototype.toJSON = function () {
+        return String(this);
+      };
+      try {
+        expect(notepack.encode(BigInt(1234))).to.deep.equal(notepack.encode('1234'));
+      } finally {
+        delete BigInt.prototype.toJSON;
+      }
+    });
+  }
 
   it('all formats', function () {
     this.timeout(20000);
